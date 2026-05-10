@@ -1,3 +1,4 @@
+
 ---
 
 ## Pipeline de Renderizado en WebGL (adición al informe)
