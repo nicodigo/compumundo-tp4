@@ -61,27 +61,21 @@ compumundo-tp4/
 
 ## HIT 1 — Introducción a Shaders y Pipeline Gráfico
 
----
 
 ## HIT 2 — Paint With Math
 
----
 
 ## HIT 3 — Texturas
 
----
 
 ## HIT 4 — Transformaciones UV
 
----
 
 ## HIT 5 — Chroma Key y Espacios de Color
 
----
 
 ## HIT 6 — Escala de grises
 
----
 
 # Tecnologías utilizadas
 
