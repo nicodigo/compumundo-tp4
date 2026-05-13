@@ -106,6 +106,18 @@ El canal V del espacio HSV.
 **Pros:** Preserva el brillo máximo del píxel. Útil para efectos donde interesa el punto de mayor energía.
 **Contras:** Ignora completamente dos tercios de la información cromática. Produce imágenes con contraste artificialmente elevado y pérdida severa en sombras.
 
+![hsv](./imgs/hsv.png)
+
+```glsl
+    // -- Grayscale -- //
+    //max(R,G,B)
+
+    float promedio = max(max(res.r, res.g), res.b);    
+    vec3 px_final = vec3(promedio, promedio, promedio);
+
+    fragColor = vec4(px_final, 1.0);
+```
+
 ---
 
 ### 6. Linearización + luminancia (pipeline físicamente correcto)
@@ -121,6 +133,11 @@ Luego aplicar BT.709, luego re-gamma si necesario.
 **Pros:** Físicamente correcto. La luminancia perceptual con los pesos BT.709 asume espacio lineal. Sin este paso, los pesos son aproximaciones. Crítico en trabajo con HDR, iluminación o cuando la precisión colorimétrica importa.
 **Contras:** Más caro computacionalmente (pow). En Shadertoy con texturas sRGB, la diferencia visual suele ser sutil pero existe. Ignorable en prototipos, no ignorable en producción.
 
+
+![hsv](./imgs/hsv.png)
+
+```glsl
+```
 ---
 
 ## Cuál es el mejor
