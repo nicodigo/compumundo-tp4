@@ -1,4 +1,4 @@
-## Hit 5 - Chroma rgb
+## Hit 5 - Chroma YCbCr
 
 
 ```glsl
@@ -48,3 +48,57 @@ void mainImage( out vec4 fragColor, in vec2 fragCoord )
 
 ### Chroma en YCbCr
 ![Chroma](./imgs/chroma_YCbCr.png)
+
+
+---
+---
+
+## Por qué YCbCr es superior a RGB para chroma key
+
+### El problema central
+
+El fondo de chroma no es un color exacto. Es una superficie física iluminada — tiene sombras, gradientes, reflexiones, variaciones de temperatura de color. En la práctica el "verde" del fondo es una nube de puntos, no un punto único.
+
+El criterio de calidad de un espacio de color para chroma key es: **qué tan compacta es esa nube**.
+
+---
+
+### Cómo se ve la nube en RGB
+
+En RGB, el brillo y el color están mezclados en los tres canales simultáneamente. Una zona iluminada del fondo tiene valores altos en G y moderados en R y B. Una zona en sombra tiene todos los valores bajos. Una zona con reflexión tiene los tres canales afectados de forma diferente.
+
+El resultado es una nube **elongada en la diagonal del cubo RGB**, estirada desde el negro hacia el verde brillante. No es compacta — ocupa un volumen significativo del espacio.
+
+Para umbralizar esa nube hay que definir una región 3D irregular. Cualquier umbral simple corta mal: o incluye píxeles del sujeto que tienen algo de verde, o excluye zonas del fondo en sombra.
+
+---
+
+### Cómo se ve la nube en YCbCr
+
+Al separar Y de Cb-Cr, la variación de brillo se va **completamente a Y**. Una zona iluminada y una en sombra del mismo verde tienen Y muy distintas pero Cb-Cr casi idénticas.
+
+Proyectando al plano Cb-Cr, la nube que antes estaba elongada en 3D ahora está **colapsada a un punto compacto**. Las variaciones de iluminación desaparecen de este plano porque están capturadas por Y, que se ignora.
+
+La distancia euclidiana en Cb-Cr a ese punto compacto es un clasificador eficaz. Un umbral circular en 2D hace lo que un umbral irregular en 3D no podía.
+
+---
+
+### La razón geométrica profunda
+
+RGB mezcla dos cosas conceptualmente distintas: **cuánta luz hay** y **de qué color es esa luz**. Esa mezcla es conveniente para displays (que emiten R, G, B independientemente) pero inconveniente para análisis.
+
+YCbCr los separa. Y responde "cuánta luz". Cb-Cr responde "de qué color". Para chroma key solo importa la segunda pregunta. Al ignorar Y se elimina la fuente principal de variación no deseada.
+
+---
+
+### Consecuencia práctica
+
+| Condición | RGB | YCbCr |
+|---|---|---|
+| Fondo bien iluminado | funciona | funciona |
+| Fondo con sombras | falla (valores bajos en los 3 canales) | funciona (Cb-Cr estable) |
+| Fondo con gradiente de luz | falla | funciona |
+| Sujeto con ropa verde | falla en ambos casos | falla en ambos casos |
+| Bordes con mezcla parcial | transición abrupta | transición suave posible |
+
+El único caso donde YCbCr no ayuda es cuando el sujeto contiene el mismo color que el fondo — ese es un problema de contenido, no de espacio de color. Ningún espacio lo resuelve sin información adicional.
