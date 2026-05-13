@@ -34,6 +34,17 @@ Los pesos reflejan la sensibilidad diferencial de los fotorreceptores cónicos h
 **Pros:** Preserva el brillo percibido. Es el estándar de la industria. La imagen resultante mantiene el contraste visual que el ojo original detectaría.
 **Contras:** Opera en espacio lineal o gamma dependiendo del pipeline. Si la textura está en sRGB (gamma ~2.2) y no se lineariza antes, los pesos son técnicamente incorrectos aunque visualmente aceptables.
 
+![weighted average](./imgs/wavrg.png)
+
+```glsl
+    // -- Grayscale -- //
+    // 0.2126·R + 0.7152·G + 0.0722·B
+    float promedio = (res.r * 0.2126 + res.g * 0.7152 + res.b * 0.0722);
+
+    vec3 px_final = vec3(promedio, promedio, promedio);
+
+    fragColor = vec4(px_final, 1.0);
+```
 ---
 
 ### 3. Luminosidad HSL (Lightness)
