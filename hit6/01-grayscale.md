@@ -45,6 +45,7 @@ Los pesos reflejan la sensibilidad diferencial de los fotorreceptores cónicos h
 
     fragColor = vec4(px_final, 1.0);
 ```
+
 ---
 
 ### 3. Luminosidad HSL (Lightness)
@@ -55,6 +56,18 @@ Extraído del modelo de color HSL, representa el punto medio entre el canal más
 
 **Pros:** Bajo costo computacional, captura el rango dinámico del píxel.
 **Contras:** Ignora la distribución interna de energía entre canales. Aplana diferencias perceptuales entre colores de igual lightness pero distinto hue/saturation. Produce halos o pérdida de detalle en regiones con saturación alta.
+
+![lightness](./imgs/lightness.png)
+
+```glsl
+    // -- Grayscale -- //
+    //(max(R,G,B) + min(R,G,B)) / 2
+    float promedio = (max(max(res.r, res.g), res.b) + min(min(res.r, res.g), res.b)) / 2.0;
+
+    vec3 px_final = vec3(promedio, promedio, promedio);
+
+    fragColor = vec4(px_final, 1.0);
+```
 
 ---
 
