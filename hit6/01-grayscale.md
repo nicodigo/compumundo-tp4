@@ -80,6 +80,21 @@ Y en YCbCr BT.709: `16 + 65.481·R + 128.553·G + 24.966·B` (rango [16,235] en 
 **Pros:** Coherente con pipelines de video y compresión. Si el contenido viene de video, esta conversión es la más fiel a la intención original.
 **Contras:** En Shadertoy, donde generalmente se trabaja con valores [0,1], es equivalente a la luminancia perceptual pero con overhead conceptual innecesario salvo que el pipeline lo requiera.
 
+
+![luma](./imgs/luma.png)
+
+```glsl
+    // -- Grayscale -- //
+    // en este caso igual a weighted average en este caso
+    //porque están normalizados el rgb de los px.
+
+    float Y_res  =  0.299 * res.r + 0.587 * res.g + 0.114 * res.b;
+
+    vec3 px_final = vec3(Y_res, Y_res, Y_res);
+
+    fragColor = vec4(px_final, 1.0);
+```
+
 ---
 
 ### 5. Valor HSV (Value)
