@@ -134,10 +134,38 @@ Luego aplicar BT.709, luego re-gamma si necesario.
 **Contras:** Más caro computacionalmente (pow). En Shadertoy con texturas sRGB, la diferencia visual suele ser sutil pero existe. Ignorable en prototipos, no ignorable en producción.
 
 
-![hsv](./imgs/hsv.png)
+![Linearización + luminancia](./imgs/linear.png)
 
 ```glsl
+    //Fórmula de linearización sRGB:
+    // Si c ≤ 0.04045: c / 12.92
+    // Si c > 0.04045: ((c + 0.055) / 1.055)^2.4
+    if (res.r <= 0.04045){
+        res.r = res.r / 12.92;
+    } else {
+        res.r = pow(((res.r + 0.055) / 1.055), 2.4);
+    }
+
+     if (res.g <= 0.04045){
+        res.g = res.g / 12.92;
+    } else {
+        res.g = pow(((res.g + 0.055) / 1.055), 2.4);
+    }
+
+     if (res.b <= 0.04045){
+        res.b = res.b / 12.92;
+    } else {
+        res.b = pow(((res.b + 0.055) / 1.055), 2.4);
+    }
+
+    // 0.2126·R + 0.7152·G + 0.0722·B 
+
+    float promedio = (res.r * 0.2126 + res.g * 0.7152 + res.b * 0.0722);   
+    vec3 px_final = vec3(promedio, promedio, promedio);
+
+    fragColor = vec4(px_final, 1.0);
 ```
+
 ---
 
 ## Cuál es el mejor
